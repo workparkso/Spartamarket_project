@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>상품 목록</h2>
+
+<ul>
+{% for product in products %}
+    <li>
+    <a href="{% url "products:product_detail" product.pk %}">
+        {{product.title}} - ({{ product.user.username}})
+        [조회수: {{product.views}}, 찜수: {{product.like_count}}]
+        {% for ht in proudct.hashtags.all %}
+            #{{ht.name}}
+        {% endfor %}
+    </li>
+{% empty %}
+    <li>상품이 없습니다.</li>
+{% endfor %}
+</ul>
+
+
+
+<form method="GET" action="{% url 'products:product_list' %}">
+    <input type="text" name="search" placeholder="검색어를 입력하세요" value="{{ search_query }}">
+    <button type="submit">검색</button>
+</form>
+
+<ul>
+    {% for product in products %}
+    {% empty %}
+        <li>검색 결과가 없습니다.</li>
+    {% endfor %}
+</ul>
+
+
+
+
+<a href="{% url "products:product_create" %}">상품등록</a>
+{% endblock %}

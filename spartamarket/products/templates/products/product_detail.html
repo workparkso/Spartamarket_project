@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ product.title }}</h2>
+<p>
+    등록자: 
+    <a href="{% url 'accounts:profile' product.user.username %}">
+        {{ product.user.username }}
+    </a>
+    / 등록일:{{ product.created_at|date:"Y-m-d" }} {{ product.created_at|time:"H:i" }}
+</p>
+<p>조회수: {{ product.views }} / 찜수: {{ product.like_count }}</p>
+{% if product.image %}
+<img src="{{ product.image.url }}" width="300">
+{% endif %}
+
+<p>{{ product.description }}</p>
+<p>
+해시태그:
+{% for ht in product.hashtags.all %}
+    #{{ ht.name }}
+{% endfor %}
+</p>
+
+
+{% if user.is_authenticated %}
+    {% if is_liked %}
+        <form method="POST" action="{% url 'products:product_like' pk=product.pk %}">
+            {% csrf_token %}
+            <button type="submit">찜 취소</button>
+        </form>
+    {% else %}
+        <form method="POST" action="{% url 'products:product_like' pk=product.pk %}">
+            {% csrf_token %}
+            <button type="submit">찜하기</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+
+
+{% comment %} <form action="{% url 'products:product_like' product.pk %}" method="post">
+    {% csrf_token %}
+    {% if user in product.likes.all %}
+        <button type="submit">찜 취소</button>
+    {% else %}
+        <button type="submit">찜하기</button>
+    {% endif %}
+</form>  {% endcomment %}
+
+
+{% if user == product.user %}
+<a href = "{% url "products:product_update" product.pk %}">수정</a>
+<form action="{% url 'products:product_delete' product.pk %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">삭제</button>
+</form>
+{%endif%} 
+
+
+<a href="{% url 'products:product_list' %}">목록으로</a>
+{% endblock %}

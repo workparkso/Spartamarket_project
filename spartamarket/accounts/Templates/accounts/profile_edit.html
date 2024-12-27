@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>프로필 수정</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    {% if form.errors %}
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+    
+    <button type="submit">변경 사항 저장</button>
+  </form>
+  <br>
+  <a href="{% url 'accounts:profile' request.user.username %}">프로필로 돌아가기</a> 
+{% endblock %}
